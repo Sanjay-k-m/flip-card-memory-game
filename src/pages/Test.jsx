@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 const Test = () => {
   const navigate = useNavigate()
   const handleClick = () => {
-    navigate(PATH_DASHBOARD.test("asdf"))
+    navigate(PATH_DASHBOARD.root)
     console.log('test')
   }
   return (
