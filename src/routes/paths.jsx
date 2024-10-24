@@ -8,7 +8,7 @@ const ROOTS_HOME = "/home";
 
 // ----------------------------------------------------------------------
 
-export const PATH_DASHBOARD = {
+export const PATH = {
   root: ROOTS_HOME,
-  test: (d) => path(ROOTS_HOME, `/test/${d}`),
+  game: path(ROOTS_HOME, `/game`),
 };

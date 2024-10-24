@@ -8,5 +8,5 @@ const Loadable = (Component) => (props) =>
     </Suspense>
   );
 
-export const TestPage = Loadable(lazy(() => import("../pages/Test")));
-export const HomePage = Loadable(lazy(() => import("../pages/Home")));
+export const GamePage = Loadable(lazy(() => import("../pages/GamePage")));
+export const HomePage = Loadable(lazy(() => import("../pages/HomePage")));

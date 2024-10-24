@@ -1,5 +1,5 @@
 import { Navigate, useRoutes } from "react-router-dom";
-import { HomePage, TestPage } from "./elements";
+import { GamePage, HomePage } from "./elements";
 
 export default function Router() {
   return useRoutes([
@@ -7,7 +7,7 @@ export default function Router() {
       path: "/home",
       children: [
         { path: "", element: <HomePage /> },
-        { path: "test/:d", element: <TestPage /> },
+        { path: "game", element: <GamePage /> },
       ],
     },
 
