@@ -1,11 +1,16 @@
 import PropTypes from "prop-types";
 import { useCallback, useEffect, useState } from "react";
 
-const Board = ({ cardSize = 4 }) => {
+const Board = ({ cardSize = 5 }) => {
   const [shuffleArray, setShuffledArray] = useState([]);
+  const [showCard, setShowCard] = useState(false);
+  const [solvedCards, setSolvedCards] = useState([]);
+  const [solvedIndex, setSolvedIndex] = useState([]);
+  console.log("  Board  solvedCards:", solvedCards);
+
   const cardValues = useCallback(() => {
     const values = cardSize * cardSize;
-    const newValue = values / 2;
+    const newValue = Math.floor(values / 2);
     return newValue;
   }, [cardSize]);
 
@@ -21,20 +26,63 @@ const Board = ({ cardSize = 4 }) => {
   };
 
   const [firstValue, setFirstValue] = useState(null);
-  console.log("🚀 ~ Board ~ firstValue:", firstValue);
+  console.log("  Board  firstValue:", firstValue);
   const [secondValue, setSecondValue] = useState(null);
-  console.log("🚀 ~ Board ~ secondValue:", secondValue);
+  console.log("  Board  secondValue:", secondValue);
 
-  const handleCardClick = (i) => {
+  const [firstIndexValue, setFirstIndexValue] = useState(null);
+  const [secondIndexValue, setSecondIndexValue] = useState(null);
+
+  const handleCardClick = async (i, index) => {
+    setShowCard(true);
     if (firstValue === null) {
       setFirstValue(i);
+      setFirstIndexValue(index);
+      setSolvedIndex([...solvedIndex, index]);
     } else if (secondValue === null) {
       setSecondValue(i);
-    } else if (firstValue && secondValue) {
-      setFirstValue(null);
-      setSecondValue(null);
+      setSecondIndexValue(index);
+      setSolvedIndex([...solvedIndex, index]);
+      console.log(firstValue, secondValue);
+      if (firstValue === secondValue) {
+        console.log("im here");
+        setSolvedCards([...solvedCards, firstValue]);
+        setFirstValue(null);
+        setSecondValue(null);
+        solvedIndex.push(firstIndexValue);
+        solvedIndex.push(secondIndexValue);
+        setFirstIndexValue(null);
+        setSecondIndexValue(null);
+      }
+      if (firstValue !== secondValue) {
+        console.log("im here");
+        
+        setTimeout(() => {
+          setSolvedIndex(solvedIndex.filter((item) => item !== firstIndexValue && item !== secondIndexValue));
+          setFirstIndexValue(null);
+        }, 1000);
+        setSecondIndexValue(null);
+      }
     }
   };
+  console.log(solvedIndex);
+
+  useEffect(() => {
+    if (firstValue !== null && secondValue !== null) {
+      if (firstValue !== secondValue) {
+        setTimeout(() => {
+          setShowCard(false);
+          setFirstValue(null);
+          setSecondValue(null);
+        }, 0);
+      } else {
+        setSolvedCards([...solvedCards, firstValue]);
+        setFirstValue(null);
+        setSecondValue(null);
+        setShowCard(false);
+      }
+    }
+  }, [firstValue, secondValue]);
 
   return (
     <div
@@ -42,13 +90,25 @@ const Board = ({ cardSize = 4 }) => {
       className="border-8 rounded-2xl border-gray-600 p-4 grid gap-4"
     >
       {shuffleArray.map((i, index) => (
-        <div
-          key={index}
-          className="border-2 rounded-2xl border-gray-600 p-12 justify-center flex text-6xl hover:bg-gray-700 transition duration-300 ease-in-out"
-          onClick={() => handleCardClick(i)}
-        >
-          {i}
-        </div>
+      
+          <div
+            key={index}
+            className="border-2 rounded-2xl border-gray-600  justify-center items-center flex text-6xl hover:bg-gray-700 transition duration-300 ease-in-out size-40"
+            onClick={
+              solvedCards.includes(i)
+                ? undefined
+                : async () => await handleCardClick(i, index)
+            }
+          >
+            {solvedCards.includes(i) ? (
+              <h1>{i}</h1>
+            ) : solvedIndex.includes(index) ? (
+              <h1>{i}</h1>
+            ) : (
+              "?"
+            )}
+          </div>
+    
       ))}
     </div>
   );
@@ -59,3 +119,4 @@ Board.propTypes = {
 };
 
 export default Board;
+
