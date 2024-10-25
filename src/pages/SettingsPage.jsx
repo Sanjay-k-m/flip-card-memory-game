@@ -1,15 +1,22 @@
+import { CircleChevronLeft } from "lucide-react";
 import HighScore from "../components/HighScore";
+import { useNavigate } from "react-router-dom";
+import { PATH } from "../routes/paths";
 
 const difficulties = [
-  { name: "Easy", value: "easy" }, // 2*2
-  { name: "Medium", value: "medium" }, //  4*4
-  { name: "Hard", value: "hard" }, // 6x6
+  { name: "Easy", value: "easy", cardSize: 2 }, // 2*2
+  { name: "Medium", value: "medium", cardSize: 4 }, //  4*4
+  { name: "Hard", value: "hard", cardSize: 6 }, // 6x6
 ];
 
 const SettingsPage = () => {
+  const navigate = useNavigate();
+  const handleClick = () => {};
   return (
     <div className="h-screen bg-black overflow-y-hidden text-green-700">
-      <div className="mt-5 mr-5 md:mt-10 md:mr-10 flex justify-end">
+      <div className="mt-5 mr-5 md:mt-10 md:mr-10 flex justify-between">
+
+        <CircleChevronLeft className="size-20  ml-11 mt-4" data-tooltip-id="home" data-tooltip-content="Go back to home" onClick={()=>navigate(PATH.root)} />
         <HighScore />
       </div>
       <div className="flex justify-center h-screen items-center ">
@@ -17,7 +24,8 @@ const SettingsPage = () => {
           {difficulties.map((difficulty) => (
             <div
               key={difficulty.value}
-              className="border-4 border-gray-600 px-5 md:px-10 py-5 md:py-10 rounded-md text-4xl text-center cursor-pointer"
+              className="border-4 border-gray-600 px-5 md:px-10 py-5 md:py-10 rounded-md text-4xl text-center cursor-pointer font-kablammo"
+              onClick={handleClick}
             >
               {difficulty.name}
             </div>

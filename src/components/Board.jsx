@@ -1,13 +1,16 @@
 import PropTypes from "prop-types";
 import { useCallback, useEffect, useState } from "react";
-
-const Board = ({ cardSize = 2 }) => {
+import toast from "react-hot-toast";
+const Board = ({ cardSize = 4 }) => {
   const [cards, setCards] = useState([{}]);
   const [selectedFirstValue, setSelectedFirstValue] = useState(null);
   console.log("🚀 ~ Board ~ selectedFirstValue:", selectedFirstValue);
   const [selectedSecondValue, setSelectedSecondValue] = useState(null);
   console.log("🚀 ~ Board ~ selectedSecondValue:", selectedSecondValue);
   console.log("🚀 ~ Board ~ cards:", cards);
+
+  const [initialShowCards, setInitialShowCards] = useState(false);
+
   const generateCards = useCallback(() => {
     let id = 0;
     const values = [...Array((cardSize * cardSize) / 2).keys()].map(
@@ -105,6 +108,46 @@ const Board = ({ cardSize = 2 }) => {
     }
   }, [selectedFirstValue, selectedSecondValue]);
 
+  const checkWin = useCallback(() => {
+    if (!initialShowCards) {
+      if (cards.every((card) => card.isFlipped)) {
+        return new Promise((resolve) =>
+          setTimeout(() => {
+            toast.success("You won!");
+            resolve();
+            generateCards(); // restart the game
+          }, 500)
+        );
+      }
+      return Promise.resolve();
+    }
+  }, [cards, initialShowCards]);
+
+  useEffect(() => {
+    const flipAllCards = () => {
+      setCards((prevCards) =>
+        prevCards.map((card) => ({ ...card, isFlipped: true }))
+      );
+    };
+
+    const resetAllCards = () => {
+      setCards((prevCards) =>
+        prevCards.map((card) => ({ ...card, isFlipped: false }))
+      );
+    };
+
+    flipAllCards();
+    setInitialShowCards(true);
+
+    setTimeout(() => {
+      resetAllCards();
+      setInitialShowCards(false);
+    }, 2000);
+  }, []);
+
+  useEffect(() => {
+    checkWin();
+  }, [checkWin]);
   return (
     <div
       className="grid gap-2 border-8 border-gray-600 p-5 rounded-lg"
@@ -113,7 +156,9 @@ const Board = ({ cardSize = 2 }) => {
       {cards.map((card, index) => (
         <div
           key={index}
-          className="border-4 border-gray-600 px-5 md:px-10 py-5 md:py-10 rounded-md text-4xl md:text-6xl text-center cursor-pointer"
+          className="flex justify-center items-center border-4 border-gray-600 rounded-md shadow-lg
+            size-32 md:px-10  md:py-10 text-4xl md:text-6xl text-center cursor-pointer
+            transition duration-300 ease-in-out hover:bg-gray-700 hover:text-green-700"
           onClick={
             card.isFlipped
               ? null
@@ -122,7 +167,11 @@ const Board = ({ cardSize = 2 }) => {
               : handleClick(card)
           }
         >
-          {card.isFlipped ? card.value : "?"}
+          {card.isFlipped ? (
+            card.value
+          ) : (
+            <h1 className="animate-bounce ">?</h1>
+          )}
         </div>
       ))}
     </div>

@@ -1,4 +1,4 @@
-version: "3"
+version: "3.8"
 services:
   client-react-vite:
     image: client-react-vite
@@ -7,11 +7,7 @@ services:
       dockerfile: ./Dockerfile.vite
     init: true
     volumes:
-      - type: bind
-        source: ./
-        target: /usr/src/app
-      - type: volume
-        target: /usr/src/app/node_modules
+      - .:/usr/src/app # Bind mount the entire app directory
     ports:
       - 5173:5173
     restart: always
