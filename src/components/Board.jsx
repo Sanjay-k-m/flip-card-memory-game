@@ -1,114 +1,129 @@
 import PropTypes from "prop-types";
 import { useCallback, useEffect, useState } from "react";
 
-const Board = ({ cardSize = 5 }) => {
-  const [shuffleArray, setShuffledArray] = useState([]);
-  const [showCard, setShowCard] = useState(false);
-  const [solvedCards, setSolvedCards] = useState([]);
-  const [solvedIndex, setSolvedIndex] = useState([]);
-  console.log("  Board  solvedCards:", solvedCards);
-
-  const cardValues = useCallback(() => {
-    const values = cardSize * cardSize;
-    const newValue = Math.floor(values / 2);
-    return newValue;
+const Board = ({ cardSize = 2 }) => {
+  const [cards, setCards] = useState([{}]);
+  const [selectedFirstValue, setSelectedFirstValue] = useState(null);
+  console.log("🚀 ~ Board ~ selectedFirstValue:", selectedFirstValue);
+  const [selectedSecondValue, setSelectedSecondValue] = useState(null);
+  console.log("🚀 ~ Board ~ selectedSecondValue:", selectedSecondValue);
+  console.log("🚀 ~ Board ~ cards:", cards);
+  const generateCards = useCallback(() => {
+    let id = 0;
+    const values = [...Array((cardSize * cardSize) / 2).keys()].map(
+      (i) => i + 1
+    );
+    const shuffledValues = [...values, ...values].map((value) => ({
+      value,
+      id: id++,
+      isFlipped: false,
+    }));
+    for (let i = shuffledValues.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [shuffledValues[i], shuffledValues[j]] = [
+        shuffledValues[j],
+        shuffledValues[i],
+      ];
+    }
+    setCards(shuffledValues);
   }, [cardSize]);
 
   useEffect(() => {
-    const values = cardValues();
-    const valuesArray = Array.from({ length: values }, (_, index) => index + 1);
-    const doubledArray = [...valuesArray, ...valuesArray];
-    setShuffledArray(doubledArray.sort(() => Math.random() - 0.5));
-  }, [cardValues]);
+    generateCards();
+  }, [generateCards]);
 
-  const gridStyle = {
-    gridTemplateColumns: `repeat(${cardSize}, minmax(0, 1fr))`,
+  const gridTemplateColumns = `repeat(${cardSize}, 1fr)`;
+  const gridTemplateRows = `repeat(${cardSize}, 1fr)`;
+
+  const cardStyle = {
+    gridTemplateColumns,
+    gridTemplateRows,
   };
 
-  const [firstValue, setFirstValue] = useState(null);
-  console.log("  Board  firstValue:", firstValue);
-  const [secondValue, setSecondValue] = useState(null);
-  console.log("  Board  secondValue:", secondValue);
-
-  const [firstIndexValue, setFirstIndexValue] = useState(null);
-  const [secondIndexValue, setSecondIndexValue] = useState(null);
-
-  const handleCardClick = async (i, index) => {
-    setShowCard(true);
-    if (firstValue === null) {
-      setFirstValue(i);
-      setFirstIndexValue(index);
-      setSolvedIndex([...solvedIndex, index]);
-    } else if (secondValue === null) {
-      setSecondValue(i);
-      setSecondIndexValue(index);
-      setSolvedIndex([...solvedIndex, index]);
-      console.log(firstValue, secondValue);
-      if (firstValue === secondValue) {
-        console.log("im here");
-        setSolvedCards([...solvedCards, firstValue]);
-        setFirstValue(null);
-        setSecondValue(null);
-        solvedIndex.push(firstIndexValue);
-        solvedIndex.push(secondIndexValue);
-        setFirstIndexValue(null);
-        setSecondIndexValue(null);
-      }
-      if (firstValue !== secondValue) {
-        console.log("im here");
-        
-        setTimeout(() => {
-          setSolvedIndex(solvedIndex.filter((item) => item !== firstIndexValue && item !== secondIndexValue));
-          setFirstIndexValue(null);
-        }, 1000);
-        setSecondIndexValue(null);
-      }
+  const handleClick = (card) => () => {
+    if (selectedFirstValue === null) {
+      setSelectedFirstValue(card);
+    } else if (selectedSecondValue === null) {
+      setSelectedSecondValue(card);
     }
   };
-  console.log(solvedIndex);
 
   useEffect(() => {
-    if (firstValue !== null && secondValue !== null) {
-      if (firstValue !== secondValue) {
-        setTimeout(() => {
-          setShowCard(false);
-          setFirstValue(null);
-          setSecondValue(null);
-        }, 0);
+    if (selectedFirstValue) {
+      setCards((prevCards) =>
+        prevCards.map((card) => {
+          if (card.id === selectedFirstValue.id) {
+            return { ...card, isFlipped: true };
+          }
+          return card;
+        })
+      );
+    }
+    if (selectedSecondValue) {
+      setCards((prevCards) =>
+        prevCards.map((card) => {
+          if (card.id === selectedSecondValue.id) {
+            return { ...card, isFlipped: true };
+          }
+          return card;
+        })
+      );
+    }
+    if (selectedFirstValue && selectedSecondValue) {
+      if (selectedFirstValue.value === selectedSecondValue.value) {
+        setCards((prevCards) =>
+          prevCards.map((card) => {
+            if (
+              card.id === selectedFirstValue.id ||
+              card.id === selectedSecondValue.id
+            ) {
+              return { ...card, isFlipped: true };
+            }
+            return card;
+          })
+        );
+
+        setSelectedFirstValue(null);
+        setSelectedSecondValue(null);
       } else {
-        setSolvedCards([...solvedCards, firstValue]);
-        setFirstValue(null);
-        setSecondValue(null);
-        setShowCard(false);
+        setTimeout(() => {
+          setCards((prevCards) =>
+            prevCards.map((card) => {
+              if (
+                card.id === selectedFirstValue.id ||
+                card.id === selectedSecondValue.id
+              ) {
+                return { ...card, isFlipped: false };
+              }
+              return card;
+            })
+          );
+          setSelectedFirstValue(null);
+          setSelectedSecondValue(null);
+        }, 1000);
       }
     }
-  }, [firstValue, secondValue]);
+  }, [selectedFirstValue, selectedSecondValue]);
 
   return (
     <div
-      style={gridStyle}
-      className="border-8 rounded-2xl border-gray-600 p-4 grid gap-4"
+      className="grid gap-2 border-8 border-gray-600 p-5 rounded-lg"
+      style={cardStyle}
     >
-      {shuffleArray.map((i, index) => (
-      
-          <div
-            key={index}
-            className="border-2 rounded-2xl border-gray-600  justify-center items-center flex text-6xl hover:bg-gray-700 transition duration-300 ease-in-out size-40"
-            onClick={
-              solvedCards.includes(i)
-                ? undefined
-                : async () => await handleCardClick(i, index)
-            }
-          >
-            {solvedCards.includes(i) ? (
-              <h1>{i}</h1>
-            ) : solvedIndex.includes(index) ? (
-              <h1>{i}</h1>
-            ) : (
-              "?"
-            )}
-          </div>
-    
+      {cards.map((card, index) => (
+        <div
+          key={index}
+          className="border-4 border-gray-600 px-5 md:px-10 py-5 md:py-10 rounded-md text-4xl md:text-6xl text-center cursor-pointer"
+          onClick={
+            card.isFlipped
+              ? null
+              : card.id === selectedFirstValue?.id
+              ? null
+              : handleClick(card)
+          }
+        >
+          {card.isFlipped ? card.value : "?"}
+        </div>
       ))}
     </div>
   );
@@ -119,4 +134,3 @@ Board.propTypes = {
 };
 
 export default Board;
-

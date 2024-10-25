@@ -9,13 +9,20 @@ const Home = () => {
         <div className="border-4 border-gray-600" />
       </div>
       <div className="sm:border-8 md:border-4 border-gray-500 rounded-3xl px-10 md:px-20 lg:px-44 py-10 md:py-20 space-y-5 md:space-y-10 ">
-        <div className="border-4 border-gray-600 px-5 md:px-10 py-5 md:py-10 rounded-md text-4xl md:text-6xl text-center">
-          <button onClick={() => navigate(PATH.game)}>
-            Start
-          </button>
+        <div
+          className="border-4 border-gray-600 px-5 md:px-10 py-5 md:py-10 rounded-md text-4xl md:text-6xl text-center cursor-pointer"
+          onClick={() => navigate(PATH.game)}
+        >
+          Start
         </div>
-        <div className="border-4 border-gray-600 px-5 md:px-10 py-5 md:py-10 rounded-md text-4xl md:text-6xl text-center">
+        <div className="border-4 border-gray-600 px-5 md:px-10 py-5 md:py-10 rounded-md text-4xl md:text-6xl text-center cursor-pointer">
           H-Score
+        </div>
+        <div
+          className="border-4 border-gray-600 px-5 md:px-10 py-5 md:py-10 rounded-md text-4xl md:text-6xl text-center cursor-pointer"
+          onClick={() => navigate(PATH.settings)}
+        >
+          Settings
         </div>
       </div>
     </div>

@@ -11,4 +11,5 @@ const ROOTS_HOME = "/home";
 export const PATH = {
   root: ROOTS_HOME,
   game: path(ROOTS_HOME, `/game`),
+  settings: path(ROOTS_HOME, `/settings`),
 };
