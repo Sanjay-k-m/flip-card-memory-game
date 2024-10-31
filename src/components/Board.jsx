@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-const Board = ({ cardSize = 4 }) => {
+const Board = ({ cardSize = 2 }) => {
   const [cards, setCards] = useState([{}]);
   const [selectedFirstValue, setSelectedFirstValue] = useState(null);
   console.log("🚀 ~ Board ~ selectedFirstValue:", selectedFirstValue);
@@ -113,7 +113,11 @@ const Board = ({ cardSize = 4 }) => {
       if (cards.every((card) => card.isFlipped)) {
         return new Promise((resolve) =>
           setTimeout(() => {
-            toast.success("You won!");
+            toast.success("You won!", {
+              style: {
+                fontSize: '2em', // Increase font size
+              },
+            });
             resolve();
             generateCards(); // restart the game
           }, 500)
@@ -167,11 +171,7 @@ const Board = ({ cardSize = 4 }) => {
               : handleClick(card)
           }
         >
-          {card.isFlipped ? (
-            card.value
-          ) : (
-            <h1 className="animate-bounce ">?</h1>
-          )}
+          {card.isFlipped ? card.value : <h1 className="animate-bounce ">?</h1>}
         </div>
       ))}
     </div>
