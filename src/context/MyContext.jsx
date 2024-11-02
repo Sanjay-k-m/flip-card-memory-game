@@ -5,8 +5,11 @@ export const Context = createContext();
 
 export const ContextProvider = ({ children }) => {
   const [level, setLevel] = useState("medium");
+  const [score, setScore] = useState({ easy: [], medium: [], hard: [] });
   return (
-    <Context.Provider value={{ level, setLevel }}>{children}</Context.Provider>
+    <Context.Provider value={{ level, setLevel, score, setScore }}>
+      {children}
+    </Context.Provider>
   );
 };
 

@@ -14,7 +14,7 @@ const Timer = ({ time, setTime }) => {
 
     const startTimerId = setTimeout(() => {
       setStarted(true);
-    }, 2000);
+    }, 0);
 
     return () => {
       clearInterval(timerId);

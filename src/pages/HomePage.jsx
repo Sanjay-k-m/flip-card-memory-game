@@ -15,7 +15,10 @@ const Home = () => {
         >
           Start
         </div>
-        <div className="border-4 border-gray-600 px-5 md:px-10 py-5 md:py-10 rounded-md text-4xl md:text-6xl text-center cursor-pointer">
+        <div
+          className="border-4 border-gray-600 px-5 md:px-10 py-5 md:py-10 rounded-md text-4xl md:text-6xl text-center cursor-pointer"
+          onClick={() => navigate(PATH.score)}
+        >
           H-Score
         </div>
         <div

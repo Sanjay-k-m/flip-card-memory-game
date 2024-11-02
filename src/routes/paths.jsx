@@ -12,4 +12,6 @@ export const PATH = {
   root: ROOTS_HOME,
   game: path(ROOTS_HOME, `/game`),
   settings: path(ROOTS_HOME, `/settings`),
+  score: path(ROOTS_HOME, `/score`),
+
 };

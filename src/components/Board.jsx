@@ -1,7 +1,15 @@
 import PropTypes from "prop-types";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useContext, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-const Board = ({ cardSize = 2, cards, setCards }) => {
+import { Context } from "../context/MyContext";
+const Board = ({ cards, setCards }) => {
+  const [cardSize, setCardSize] = useState(2);
+  const { level } = useContext(Context);
+  useEffect(() => {
+    if (level === "easy") setCardSize(2);
+    if (level === "medium") setCardSize(4);
+    if (level === "hard") setCardSize(6);
+  }, [level]);
   const [selectedFirstValue, setSelectedFirstValue] = useState(null);
   console.log("🚀 ~ Board ~ selectedFirstValue:", selectedFirstValue);
   const [selectedSecondValue, setSelectedSecondValue] = useState(null);
@@ -114,10 +122,10 @@ const Board = ({ cardSize = 2, cards, setCards }) => {
           setTimeout(() => {
             toast.success("You won!", {
               style: {
-                fontSize: '2em', // Increase font size
+                fontSize: "2em", // Increase font size
               },
             });
-            
+
             resolve();
             generateCards(); // restart the game
           }, 500)
@@ -146,7 +154,7 @@ const Board = ({ cardSize = 2, cards, setCards }) => {
     setTimeout(() => {
       resetAllCards();
       setInitialShowCards(false);
-    }, 2000);
+    }, 0);
   }, []);
 
   useEffect(() => {
@@ -182,9 +190,9 @@ Board.propTypes = {
   cardSize: PropTypes.number,
   cards: PropTypes.shape({
     every: PropTypes.func,
-    map: PropTypes.func
+    map: PropTypes.func,
   }),
-  setCards: PropTypes.func
-}
+  setCards: PropTypes.func,
+};
 
 export default Board;

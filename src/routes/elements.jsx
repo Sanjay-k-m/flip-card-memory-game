@@ -13,3 +13,6 @@ export const HomePage = Loadable(lazy(() => import("../pages/HomePage")));
 export const SettingsPage = Loadable(
   lazy(() => import("../pages/SettingsPage"))
 );
+export const ScorePage = Loadable(
+  lazy(() => import("../pages/ScorePage"))
+);

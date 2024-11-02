@@ -37,7 +37,9 @@ const SettingsPage = () => {
           {difficulties.map((difficulty) => (
             <div
               key={difficulty.value}
-              className={`border-4 border-gray-600 px-5 md:px-10 py-5 md:py-10 rounded-md text-4xl text-center cursor-pointer font-kablammo ${level === difficulty.value && "bg-gray-900"} `}
+              className={`border-4 border-gray-600 px-5 md:px-10 py-5 md:py-10 rounded-md text-4xl text-center cursor-pointer font-kablammo ${
+                level === difficulty.value && "bg-gray-900"
+              } `}
               onClick={() => handleClick(difficulty.value)}
             >
               {difficulty.name}

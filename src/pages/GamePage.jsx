@@ -4,24 +4,37 @@ import HighScore from "../components/HighScore";
 import { CircleChevronLeft } from "lucide-react";
 import { PATH } from "../routes/paths";
 import Timer from "../components/Timer";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
+import { Context } from "../context/MyContext";
+import toast from "react-hot-toast";
 
 const GamePage = () => {
   const navigate = useNavigate();
-  const [time, setTime] = useState(0);
+  const [time, setTime] = useState(1000);
   const [cards, setCards] = useState([{}]);
-
-  const [score, setScore] = useState({ easy: [], medium: [], hard: [] });
-  console.log("🚀 ~ GamePage ~ score:", score);
-
+  const { level, score, setScore } = useContext(Context);
   const gameWon = async () => {
-    console.log("All cards are flipped");
-    await setScore((prevScore) => ({
-      ...prevScore,
-      easy: [...prevScore.easy, time],
-    }));
+    const currentTime = time;
+    const previousTime = score[level]?.[0];
+
+    if (previousTime === undefined || currentTime < previousTime) {
+      if (currentTime !== 1000) {
+        toast.success("New High Score : " + currentTime + "Sec ", {
+          duration: 2000,
+        });
+      }
+      await setScore((prevScore) => ({
+        ...prevScore,
+        [level]: [currentTime, ...prevScore[level].slice(1)].sort(
+          (a, b) => a - b
+        ),
+      }));
+    }
+
     setTime(0);
   };
+
+  console.log(score);
 
   useEffect(() => {
     if (cards.every((card) => card.isFlipped)) {
