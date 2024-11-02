@@ -1,8 +1,8 @@
+import PropTypes from "prop-types";
 import { TimerIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const Timer = () => {
-  const [time, setTime] = useState(0);
+const Timer = ({ time, setTime }) => {
   const [started, setStarted] = useState(false);
 
   useEffect(() => {
@@ -41,5 +41,9 @@ const Timer = () => {
   );
 };
 
-export default Timer;
+Timer.propTypes = {
+  setTime: PropTypes.func,
+  time: PropTypes.number,
+};
 
+export default Timer;

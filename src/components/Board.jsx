@@ -1,8 +1,7 @@
 import PropTypes from "prop-types";
 import { useCallback, useEffect, useState } from "react";
 import toast from "react-hot-toast";
-const Board = ({ cardSize = 2 }) => {
-  const [cards, setCards] = useState([{}]);
+const Board = ({ cardSize = 2, cards, setCards }) => {
   const [selectedFirstValue, setSelectedFirstValue] = useState(null);
   console.log("🚀 ~ Board ~ selectedFirstValue:", selectedFirstValue);
   const [selectedSecondValue, setSelectedSecondValue] = useState(null);
@@ -118,6 +117,7 @@ const Board = ({ cardSize = 2 }) => {
                 fontSize: '2em', // Increase font size
               },
             });
+            
             resolve();
             generateCards(); // restart the game
           }, 500)
@@ -180,6 +180,11 @@ const Board = ({ cardSize = 2 }) => {
 
 Board.propTypes = {
   cardSize: PropTypes.number,
-};
+  cards: PropTypes.shape({
+    every: PropTypes.func,
+    map: PropTypes.func
+  }),
+  setCards: PropTypes.func
+}
 
 export default Board;

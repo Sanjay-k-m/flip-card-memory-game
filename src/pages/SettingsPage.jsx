@@ -2,6 +2,9 @@ import { CircleChevronLeft } from "lucide-react";
 import HighScore from "../components/HighScore";
 import { useNavigate } from "react-router-dom";
 import { PATH } from "../routes/paths";
+import { Context } from "../context/MyContext";
+import { useContext } from "react";
+import toast from "react-hot-toast";
 
 const difficulties = [
   { name: "Easy", value: "easy", cardSize: 2 }, // 2*2
@@ -10,13 +13,23 @@ const difficulties = [
 ];
 
 const SettingsPage = () => {
+  const { level, setLevel } = useContext(Context);
+
   const navigate = useNavigate();
-  const handleClick = () => {};
+  const handleClick = (value) => {
+    setLevel(value);
+    if (level === value) return toast.error("Already set to " + value);
+    toast.success("Level set to " + value);
+  };
   return (
     <div className="h-screen bg-black overflow-y-hidden text-green-700">
       <div className="mt-5 mr-5 md:mt-10 md:mr-10 flex justify-between">
-
-        <CircleChevronLeft className="size-20  ml-11 mt-4" data-tooltip-id="home" data-tooltip-content="Go back to home" onClick={()=>navigate(PATH.root)} />
+        <CircleChevronLeft
+          className="size-20  ml-11 mt-4"
+          data-tooltip-id="home"
+          data-tooltip-content="Go back to home"
+          onClick={() => navigate(PATH.root)}
+        />
         <HighScore />
       </div>
       <div className="flex justify-center h-screen items-center ">
@@ -24,8 +37,8 @@ const SettingsPage = () => {
           {difficulties.map((difficulty) => (
             <div
               key={difficulty.value}
-              className="border-4 border-gray-600 px-5 md:px-10 py-5 md:py-10 rounded-md text-4xl text-center cursor-pointer font-kablammo"
-              onClick={handleClick}
+              className={`border-4 border-gray-600 px-5 md:px-10 py-5 md:py-10 rounded-md text-4xl text-center cursor-pointer font-kablammo ${level === difficulty.value && "bg-gray-900"} `}
+              onClick={() => handleClick(difficulty.value)}
             >
               {difficulty.name}
             </div>
